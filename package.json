@@ -1,0 +1,22 @@
+{
+  "name": "viliger_colaction",
+  "version": "1.0.0",
+  "description": "Viliger_Colaction",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "install-app-deps"
+  },
+  "author": "沈阳航空航天大学计算机学院 张鋆枻(DOEMsy@github)",
+  "devDependencies": {
+    "electron": "^6.0.6",
+    "element-ui": "file:node_modules/element-ui"
+  },
+  "dependencies": {
+    "electron-builder": "^21.2.0",
+    "electron-prebuilt": "^1.4.13",
+    "electron-rebuild": "^1.8.6",
+    "sqlite3": "^4.1.0",
+    "vuejs-dialog": "^1.4.1"
+  }
+}
