@@ -1,5 +1,7 @@
 # 村民管理项目试做
 
+**REAMDE版本过低，主要参考代码注释**
+
 前端：bootstrap4，vue.js，~~element-UI~~
 
 逻辑层：node.js
