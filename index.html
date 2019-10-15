@@ -49,7 +49,7 @@
 							<!--这里是导航树-->
 							<ul id="groups" class="col-2 border rounded" style="height: 100%;overflow: auto;list-style: none;">
 								<li class="btn-group border rounded " style="width: 100%;">
-									<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#newgroupmodal">新建组</button>
+									<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-info border rounded btn-sm" data-toggle="modal" data-target="#newgroupmodal">新建组</button>
 									<div class="modal fade" id="newgroupmodal">
 										<div class="modal-dialog  modal-lg">
 											<div class="modal-content">
@@ -78,7 +78,7 @@
 										</div>
 									</div>
 
-									<button type="button" class="btn btn-danger btn-sm" v-on:click="Botton_Refrash_input_message()" data-toggle="modal">新建户</button>
+									<button type="button" class="btn btn-info border rounded btn-sm" v-on:click="Botton_Refrash_input_message()" data-toggle="modal">新建户</button>
 									<div class="modal fade" id="newhouseholdmodal">
 										<div class="modal-dialog  modal-lg">
 											<div class="modal-content">
@@ -173,15 +173,15 @@
 							<div class="col bg-light" style="height: 100%;overflow: auto;">
 								<div class="col rounded border bg-white" style="height: 22%;">
 									<div class="row" style="height: 100%;">
-										<div class="col-10  border" style="height: 100%;">
+										<div class="col-10 border" style="height: 100%;">
 											<div class="row  border" style="height: 25%;">
-												<div class="col-1 border"><strong>户主</strong></div>
+												<div class="col border"><strong>户主</strong></div>
 												<div class="col border">{{print_message.name}}</div>
-												<div class="col-1 border"><strong>性别</strong></div>
+												<div class="col border"><strong>性别</strong></div>
 												<div class="col border">{{print_message.sex}}</div>
-												<div class="col border"><strong>出生年月</strong></div>
+												<div class="col-2 border"><strong>出生年月</strong></div>
 												<div class="col border">{{print_message.birthday}}</div>
-												<div class="col-1 border"><strong>民族</strong></div>
+												<div class="col border"><strong>民族</strong></div>
 												<div class="col border">{{print_message.race}}</div>
 											</div>
 											<div class="row border" style="height: 25%;">
@@ -206,7 +206,16 @@
 											</div>
 										</div>
 										<div class="col rounded border" style="height: 100%;">
-											照片
+											<div class="row" style="height: 100%;">
+												<div class="col rounded border" style="height: 100%;">照片</div>
+												<div class="col-3 rounded border" style="height: 100%;">
+													<div class="row btn-group-vertical" style="height: 100%;">
+													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">更换照片</button>
+													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">修改信息</button>
+													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">删除该户</button>													
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -227,7 +236,7 @@
 								<div class="col rounded border bg-white" style="height: 33%;overflow: auto;">
 									<div class="row border rounded">
 										<div class="col-9"><strong>家庭主要成员</strong></div>
-										<div class="col"><button type="button" class="btn btn-light border btn-sm" v-on:click="Botton_Refrash_input_viliger()" data-toggle="modal">添加人口</button></div>
+										<div class="col"><button type="button" class="btn btn-outline-info btn-sm" v-on:click="Botton_Refrash_input_viliger()" data-toggle="modal">添加人口</button></div>
 										<div class="modal fade" id="newviligermodal">
 											<div class="modal-dialog  modal-lg">
 												<div class="modal-content">
