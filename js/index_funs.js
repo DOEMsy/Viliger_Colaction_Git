@@ -32,20 +32,21 @@ var ReadPersons = ()=>{
             var groupname = group_rows[index].groupname;
             Vue.set(Persons_Vue.Groups,groupname,groupnum);
             Vue.set(Persons_Vue.Groups2,groupnum,groupname); 
-            console.log(groupnum,groupname);
+            console.log('组：',groupnum,groupname);
             Vue.set(Persons_Vue.Persons,groupnum,{});
             if(groupnum>maxgroupnum)    maxgroupnum = groupnum;
-
-            window.GET_Household_hasgroupnum(groupnum,(household_row)=>{
+            
+            window.GET_Household_hasgroupnum(group_rows[index],(household_row)=>{
                 var ownerid = household_row.ownerid;
-                console.log(household_row.groupnum,ownerid);
+                console.log('户：',household_row);
                 Vue.set(Persons_Vue.Persons[household_row.groupnum],ownerid,household_row);
                 Vue.set(Persons_Vue.Persons[household_row.groupnum][ownerid],'viligers',{});
-                window.GET_Viliger_hasownerid(ownerid,(viliger_row)=>{
+                window.GET_Viliger_hasownerid(household_row,(viliger_row)=>{
                     for(obj in viliger_row)
                         if(viliger_row[obj]=='wq648a52vke1')
                             viliger_row[obj]='';
-                    Vue.set(Persons_Vue.Persons[groupnum][ownerid].viligers,viliger_row.id,viliger_row);
+                    console.log('组号',household_row.groupnum,'户主身份证',household_row.ownerid);
+                    Vue.set(Persons_Vue.Persons[household_row.groupnum][household_row.ownerid].viligers,viliger_row.id,viliger_row);
                 });
             });
         }
@@ -129,11 +130,12 @@ var Botton_ADD_Household = ()=>{
             console.log(Persons_Vue.input_message);
             let input_message = Persons_Vue.input_message;
             let newhousehold={};
-            for(obj in input_message)   newhousehold[obj] = input_message[obj];
+            for(obj in input_message)   newhousehold[obj] = input_message[obj]+'';
             newhousehold.groupnum = Persons_Vue.Groups[newhousehold.groupnum];
             console.log(newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
             window.ADD_Household_sql(newhousehold);
+            Vue.set(Persons_Vue.Persons[newhousehold.groupnum][newhousehold.ownerid],'viligers',{});
             /*
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,'');
@@ -172,7 +174,7 @@ var Botton_ADD_Viliger = ()=>{
             var ownerid = Persons_Vue.print_message.ownerid;
             var groupnum = Persons_Vue.print_message.groupnum;
             newviliger.ownerid = ownerid;
-            console.log(newviliger);
+            console.log(groupnum,ownerid,newviliger);
             Vue.set(Persons_Vue.Persons[groupnum][ownerid].viligers,newviliger.id,newviliger);
             window.ADD_Viliger_sql(newviliger);
         }
@@ -217,6 +219,68 @@ var Botton_DEL_Viliger = (id)=>{
         var ownerid = Persons_Vue.print_message.ownerid;
         Vue.delete(Persons_Vue.Persons[groupnum][ownerid].viligers,id);
         window.DEL_Viliger(id);
+    }catch(err){
+        console.log(err);
+    }
+}
+
+/*
+    按钮功能：删除户
+    删除目标ownerid的户
+*/
+var Botton_DEL_Household = (ownerid)=>{
+    try{
+        var groupnum = Persons_Vue.print_message.groupnum;
+        Vue.delete(Persons_Vue.Persons[groupnum],ownerid);
+        window.DEL_Viliger_hasownerid(ownerid);
+        window.DEL_Household(ownerid);
+    }catch(err){
+        console.log(err);
+    }
+}
+
+/* 
+    按钮功能：修改户信息
+*/
+var Botton_Cg_Household = ()=>{
+    try{
+        if( Persons_Vue.input_message.groupnum==""||
+            Persons_Vue.input_message.name==""||
+            Persons_Vue.input_message.ownerid==""
+        ){
+            var date = new Date();
+            var time = date.getHours()+''+date.getMinutes()+date.getSeconds(); 
+            $("#bottonrehdalerts").append("<div class=\""+time+
+            " bottonaddgpalert alert alert-warning alert-dismissible fade show\" role=\"alert\">"+
+            "<strong>错误</strong> ，户主姓名、身份证、组号为必填项"+
+            "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
+            "<span aria-hidden=\"true\">&times;</span></button></div>"
+            );
+            console.log("."+time);
+            $("."+time).delay(1500).slideUp( 700 );
+        }else{
+            $("#rehouseholdmodal").modal('hide');
+            console.log('input_message',Persons_Vue.input_message);
+            let ownerid = Persons_Vue.print_message.ownerid;
+            //console.log(ownerid);
+            Botton_DEL_Household(ownerid);
+            let input_message = Persons_Vue.input_message;
+            let newhousehold={};
+            for(obj in input_message)   newhousehold[obj] = input_message[obj]+'';
+            newhousehold.groupnum = Persons_Vue.Groups[newhousehold.groupnum];
+            console.log('newhousehold',newhousehold);
+            Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
+            window.ADD_Household_sql(newhousehold);
+            Vue.set(Persons_Vue,'print_message',newhousehold);
+            for(obj in Persons_Vue.print_message){
+                if(Persons_Vue.print_message[obj]==='wq648a52vke1')
+                    Vue.set(Persons_Vue.print_message,obj,'');
+            }
+            /*
+            for(obj in Persons_Vue.input_message)
+                Vue.set(Persons_Vue.input_message,obj,'');
+            */
+        }
     }catch(err){
         console.log(err);
     }

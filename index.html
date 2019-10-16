@@ -157,10 +157,10 @@
 								</li>
 								<li v-for="(group, groupnum, index) in Persons" class="">
 									<div class="btn-group rounded border" style="width: 100%;">
-										<button v-bind:href="'#group'+index" data-toggle="collapse" class="btn btn-sm btn-warning container-fluid">{{Groups2[groupnum]}}</button>
+										<button v-bind:href="'#group'+groupnum" data-toggle="collapse" class="btn btn-sm btn-warning container-fluid">{{Groups2[groupnum]}}</button>
 										<button class="btn btn-sm btn-warning" v-on:click="Botton_DEL_Group(groupnum)">x</button>
 									</div>
-									<ul v-bind:id="'group'+index" class="collapse  rounded border border-warning" style="list-style: none;">
+									<ul v-bind:id="'group'+groupnum" class="collapse  rounded border border-warning" style="list-style: none;">
 										<li v-for="household in group">
 											<button class="btn btn-sm btn-light rounded border container-fluid" v-on:click="Botton_Change_Print(household)">{{household.name}}</button>
 										</li>
@@ -170,7 +170,7 @@
 							</ul>
 
 							<!--信息面板-->
-							<div class="col bg-light" style="height: 100%;overflow: auto;">
+							<div id="housholdinfodisplay" class="col bg-light" style="height: 100%;overflow: auto;">
 								<div class="col rounded border bg-white" style="height: 22%;">
 									<div class="row" style="height: 100%;">
 										<div class="col-10 border" style="height: 100%;">
@@ -211,8 +211,83 @@
 												<div class="col-3 rounded border" style="height: 100%;">
 													<div class="row btn-group-vertical" style="height: 100%;">
 													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">更换照片</button>
-													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">修改信息</button>
-													<button type="button" v-on:click="Botton_Refrash_input_groupname()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">删除该户</button>													
+													<button type="button" v-on:click="Botton_Re_Household()" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">修改信息</button>
+													<div class="modal fade" id="rehouseholdmodal">
+														<div class="modal-dialog  modal-lg">
+															<div class="modal-content">
+														
+																<!-- 模态框头部 -->
+																<div class="modal-header">
+																	<h4 class="modal-title">修改户信息</h4>
+																	<button type="button" class="close" data-dismiss="modal" >&times;</button>
+																</div>
+														
+																<!-- 模态框主体 -->
+																<div class="modal-body">
+																	<div class="container">
+																		<form class="form-group">
+																			<div class="input-group mb-3">
+																				<div class="input-group-prepend">
+																					<span class="input-group-text">户主基本信息</span>
+																				</div>
+																				<input v-model="input_message.name" type="text" class="form-control" placeholder="姓名">
+																				<input v-model="input_message.ownerid" type="text" class="form-control" placeholder="身份证" style="width: 150px;">
+																				<input v-model="input_message.sex" type="text" class="form-control" placeholder="性别" style="width: 20px;">
+																				<input v-model="input_message.birthday" type="text" class="form-control" placeholder="出生年月">
+																				<input v-model="input_message.race" type="text" class="form-control" placeholder="种族">
+																			</div>
+																			<div class="input-group mb-3">
+																				<div class="input-group-prepend">
+																					<span class="input-group-text">户主工作信息</span>
+																				</div>
+																				<input v-model="input_message.political" type="text" class="form-control" placeholder="政治面貌">
+																				<input v-model="input_message.education" type="text" class="form-control" placeholder="学历" style="width: 20px;">
+																				<input v-model="input_message.job" type="text" class="form-control" placeholder="职务或专长">
+																				<input v-model="input_message.phone" type="text" class="form-control" placeholder="联系电话" style="width: 50px;">
+																				<input v-model="input_message.fc" type="text" class="form-control" placeholder="是否建立档立卡" style="width: 50px;">
+																			</div>
+																			<div class="input-group mb-3">
+																				<div class="input-group-prepend">
+																					<span class="input-group-text">家庭信息</span>
+																				</div>
+																				<textarea v-model="input_message.income" class="form-control" rows="7" placeholder="年均收入及来源"></textarea>
+																				<textarea v-model="input_message.fielding" class="form-control" rows="7" placeholder="耕地面积"></textarea>
+																				<textarea v-model="input_message.breeding" class="form-control" rows="7" placeholder="养殖情况"></textarea>
+																				<textarea v-model="input_message.causeofpoverty" class="form-control" rows="7" placeholder="致贫原因"></textarea>
+																				<textarea v-model="input_message.remark" class="form-control" rows="7" placeholder="备注"></textarea>
+																			</div>
+																		</form>
+																		<form class="form-group">
+																			<div class="input-group mb-3" style="width:225px;">
+																				<div class="input-group-prepend">
+																					<span class="input-group-text">家庭总人口</span>
+																				</div>
+																				<input v-model="input_message.familynum" type="text" class="form-control" placeholder="人数">
+																			</div>
+				
+																		</form>
+																		<form class="form-group">
+																			<div class="input-group mb-3" style="width:210px;">
+																				<div class="input-group-prepend">
+																					<span class="input-group-text">属于组</span>
+																				</div>
+																				<select class="form-control" v-model="input_message.groupnum">
+																					<option v-for="(group, groupnum, index) in Persons">{{Groups2[groupnum]}}</option>
+																				</select>
+																			</div>  
+																		</form>
+																	</div>
+																</div>
+														
+																<!-- 模态框底部 -->
+																<div class="modal-footer">
+																	<button type="button" v-on:click="Botton_Cg_Household()" class="btn btn-secondary">修改</button>
+																</div>
+																<div id="bottonrehdalerts"></div>
+															</div>
+														</div>
+													</div>
+													<button type="button" v-on:click="Botton_DEL_Household(print_message.ownerid)" class="btn btn-outline-info btn-sm" style="font-size:10px;line-height: 12px;">删除该户</button>													
 													</div>
 												</div>
 											</div>
@@ -346,7 +421,7 @@
 	<script src="./js/index_vue.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./bootstrap-4.3.1-dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		
+		$('#housholdinfodisplay').hide();
 	</script>
 </body>
 </html>

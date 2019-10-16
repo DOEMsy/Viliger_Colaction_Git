@@ -189,13 +189,13 @@ window.GETALL_Group = (callback)=>{
 }
 
 /*
-  函数：导出指定组号的户
+  函数：导出指定组的户
   引入：组号
   一次为组号是目标组号的单个户，循环直到全部
 */
-window.GET_Household_hasgroupnum = (groupnum,callback)=>{
+window.GET_Household_hasgroupnum = (Group,callback)=>{
   try{
-    db.each('SELECT * FROM Households WHERE groupnum = ? ORDER BY name',[groupnum+''],(err,household_row)=>{
+    db.each('SELECT * FROM Households WHERE groupnum = ? ORDER BY name',[Group.groupnum+''],(err,household_row)=>{
       if(err){
         throw(err);
       }
@@ -206,13 +206,13 @@ window.GET_Household_hasgroupnum = (groupnum,callback)=>{
   }
 }
 /*
-  函数：导出指定指定户主身份证的村民
+  函数：导出指定指定户的村民
   引入：户主身份证
   一次为指定单个村民，循环直到全部
 */
-window.GET_Viliger_hasownerid = (ownerid,callback)=>{
+window.GET_Viliger_hasownerid = (Household,callback)=>{
   try{
-    db.each('SELECT * FROM Viligers WHERE ownerid = ? ORDER BY NAME',[ownerid],(err,viliger_row)=>{
+    db.each('SELECT * FROM Viligers WHERE ownerid = ? ORDER BY NAME',[Household.ownerid],(err,viliger_row)=>{
       if(err){
         throw(err);
       }
@@ -239,6 +239,30 @@ window.DEL_Group = (groupnum)=>{
 window.DEL_Viliger = (id)=>{
   try{
     db.run('DELETE FROM Viligers WHERE id = ?',id,(err)=>{
+      if(err){
+        throw(err);
+      }
+    });
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.DEL_Viliger_hasownerid = (ownerid)=>{
+  try{
+    db.run('DELETE FROM Viligers WHERE ownerid = ?',ownerid,(err)=>{
+      if(err){
+        throw(err);
+      }
+    });
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.DEL_Household = (ownerid)=>{
+  try{
+    db.run('DELETE FROM Households WHERE ownerid = ?',ownerid,(err)=>{
       if(err){
         throw(err);
       }

@@ -38,10 +38,17 @@ var Persons_Vue = new Vue({
         Botton_ADD_Household:function(){Botton_ADD_Household();},   //对接按钮功能：添加新户
         Botton_ADD_Viliger:function(){Botton_ADD_Viliger();},       //对接按钮功能：添加新人
         Botton_Change_Print:function(household){                    //按钮功能：改变展示户
-            Vue.set(Persons_Vue,'print_message',household);
-            for(obj in Persons_Vue.print_message){
-                if(Persons_Vue.print_message[obj]==='wq648a52vke1')
-                    Vue.set(Persons_Vue.print_message,obj,'');
+            if(household.groupnum!=Persons_Vue.print_message.groupnum&&household.ownerid!=Persons_Vue.print_message.ownerid){
+                $('#housholdinfodisplay').fadeOut(()=>{
+                    Vue.set(Persons_Vue,'print_message',household);
+                    for(obj in Persons_Vue.print_message){
+                        if(Persons_Vue.print_message[obj]==='wq648a52vke1')
+                            Vue.set(Persons_Vue.print_message,obj,'');
+                    }
+                });
+                $('#housholdinfodisplay').fadeIn();
+            }else{
+                console.log('再次点击相同');
             }
         },
         Botton_Refrash_input_message:function(){                    //按钮功能：刷新输入缓存，响应按钮打开户添加框
@@ -73,7 +80,22 @@ var Persons_Vue = new Vue({
             });
         },
         Botton_DEL_Group:function(groupnum){Botton_DEL_Group(groupnum);},   //对接按钮功能：删除组
-        Botton_DEL_Viliger:function(id){Botton_DEL_Viliger(id);}             //对接按钮功能：删除村民
+        Botton_DEL_Viliger:function(id){Botton_DEL_Viliger(id);},            //对接按钮功能：删除村民
+        Botton_DEL_Household:function(ownerid){$('#housholdinfodisplay').fadeOut(Botton_DEL_Household(ownerid));},//对接按钮功能：删除户
+        Botton_Re_Household:function(){                                        //按钮功能：输出缓存->输入缓存，响应按钮打开户修改框
+            for(obj in Persons_Vue.input_message)
+                Vue.set(Persons_Vue.input_message,obj,Persons_Vue.print_message[obj]);
+            Persons_Vue.input_message.groupnum = Persons_Vue.Groups2[Persons_Vue.input_message.groupnum];
+            console.log(this.input_message,this.print_message);
+            $('#rehouseholdmodal').modal({
+                backdrop: 'static',
+                keyboard: true
+            });
+        },
+        Botton_Cg_Household:function(){
+            $('#housholdinfodisplay').fadeOut(Botton_Cg_Household());
+            $('#housholdinfodisplay').fadeIn();
+        }
     }
 });
 
