@@ -2,27 +2,6 @@
     预加载功能：从数据库读出数据至缓存
 */
 var ReadPersons = ()=>{
-    /*
-    Persons = {
-        "1":[
-            {name:"老李家",viligers:[{name:"李相赫"},{name:"李？？"}]},
-            {name:"老赵家",viligers:[{name:"赵家毅"}]},
-            {name:"老王家",viligers:[{name:"隔壁老王"}]}
-        ],
-        "2":[
-            {name:"老周家",viligers:[{name:"上条当麻"},{name:"Index"}]},
-            {name:"小赵家",viligers:[{name:"不胜战神"},{name:"秃头披风侠"}]},
-            {name:"小王家",viligers:[{name:"王跃霖"}]},
-            {name:"小红家",viligers:[{name:"银桑"},{name:"神乐"},{name:"眼镜"},{name:"小春"}]}
-        ],
-        "3":[
-            {name:"小明家",viligers:[{name:"他的后宫们"}]}
-        ],
-        "4":[
-            {name:"小刚家",viligers:[{name:"番外个体"},{name:"10036"},{name:"10037"},{name:"10038"},{name:"10039"},{name:"10040"},{name:"10041"},{name:"10042"},{name:"10043"},{name:"10044"},{name:"10045"}]}
-        ]
-    };
-    */
     maxgroupnum = 0;
     window.GETALL_Group((group_rows)=>{
         console.log(group_rows);
@@ -31,7 +10,7 @@ var ReadPersons = ()=>{
             var groupnum = group_rows[index].groupnum;
             var groupname = group_rows[index].groupname;
             Vue.set(Persons_Vue.Groups,groupname,groupnum);
-            Vue.set(Persons_Vue.Groups2,groupnum,groupname); 
+            Vue.set(Persons_Vue.Groups2,'g'+groupnum,groupname); 
             console.log('组：',groupnum,groupname);
             Vue.set(Persons_Vue.Persons,groupnum,{});
             if(groupnum>maxgroupnum)    maxgroupnum = groupnum;
@@ -72,18 +51,7 @@ var is_obj_empty = (obj)=>{
 var Botton_ADD_Group = ()=>{
     try{
         if(Persons_Vue.input_groupname.groupname==''){
-            
-            var date = new Date();
-            var time = date.getHours()+''+date.getMinutes()+date.getSeconds(); 
-            $("#bottonaddgpalerts").append("<div class=\""+time+
-            " bottonaddgpalert alert alert-warning alert-dismissible fade show\" role=\"alert\">"+
-            "<strong>错误</strong> ，组号不能为空！"+
-            "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
-            "<span aria-hidden=\"true\">&times;</span></button></div>"
-            );
-            console.log("."+time);
-            $("."+time).delay(1500).slideUp( 700 );
-            //$("."+time).remove();
+            Alert("错误","组号不能为空！","warning","#bottonaddgpalert");
         }else{
             $("#newgroupmodal").modal('hide');
             maxgroupnum++;
@@ -93,9 +61,10 @@ var Botton_ADD_Group = ()=>{
             //Persons[maxgroupnum] = {};
             Vue.set(Persons_Vue.Persons,groupnum,{});
             Vue.set(Persons_Vue.Groups,groupname,groupnum);
-            Vue.set(Persons_Vue.Groups2,groupnum,groupname);
+            Vue.set(Persons_Vue.Groups2,'g'+groupnum,groupname);
             newGroup = {groupnum:groupnum,groupname:groupname};
-            window.ADD_Group_sql(newGroup);  
+            window.ADD_Group_sql(newGroup); 
+            Alert("成功","创建组\""+groupname+"\"成功","success"); 
             //alert('新建成功');
         }
     }catch(err){
@@ -115,16 +84,7 @@ var Botton_ADD_Household = ()=>{
             Persons_Vue.input_message.name==""||
             Persons_Vue.input_message.ownerid==""
         ){
-            var date = new Date();
-            var time = date.getHours()+''+date.getMinutes()+date.getSeconds(); 
-            $("#bottonaddhdalerts").append("<div class=\""+time+
-            " bottonaddgpalert alert alert-warning alert-dismissible fade show\" role=\"alert\">"+
-            "<strong>错误</strong> ，户主姓名、身份证、组号为必填项"+
-            "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
-            "<span aria-hidden=\"true\">&times;</span></button></div>"
-            );
-            console.log("."+time);
-            $("."+time).delay(1500).slideUp( 700 );
+            Alert("错误","户主姓名、身份证、组号为必填项","warning","#bottonaddgpalert");
         }else{
             $("#newhouseholdmodal").modal('hide');
             console.log(Persons_Vue.input_message);
@@ -136,6 +96,7 @@ var Botton_ADD_Household = ()=>{
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
             window.ADD_Household_sql(newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum][newhousehold.ownerid],'viligers',{});
+            Alert("成功","创建户\""+newhousehold.ownerid+"\"成功","success"); 
             /*
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,'');
@@ -155,16 +116,7 @@ var Botton_ADD_Viliger = ()=>{
             Persons_Vue.input_viliger.id==""||
             Persons_Vue.input_viliger.relation==""
         ){
-            var date = new Date();
-            var time = date.getHours()+''+date.getMinutes()+date.getSeconds(); 
-            $("#bottonaddvgalerts").append("<div class=\""+time+
-            " bottonaddgpalert alert alert-warning alert-dismissible fade show\" role=\"alert\">"+
-            "<strong>错误</strong> ，村民姓名、身份证、与户主关系为必填项"+
-            "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
-            "<span aria-hidden=\"true\">&times;</span></button></div>"
-            );
-            console.log("."+time);
-            $("."+time).delay(1500).slideUp( 700 );
+            Alert("错误","村民姓名、身份证、与户主关系为必填项","warning","#bottonaddvgalerts");
         }else{
             $("#newviligermodal").modal('hide');
             console.log(Persons_Vue.input_viliger);
@@ -177,6 +129,7 @@ var Botton_ADD_Viliger = ()=>{
             console.log(groupnum,ownerid,newviliger);
             Vue.set(Persons_Vue.Persons[groupnum][ownerid].viligers,newviliger.id,newviliger);
             window.ADD_Viliger_sql(newviliger);
+            Alert("成功","添加村民\""+newviliger.name+"\"成功","success"); 
         }
     }catch(err){
         console.log(err);
@@ -195,14 +148,16 @@ var Botton_DEL_Group = (groupnum)=>{
             console.log(obj,Persons_Vue.Persons[groupnum][obj]);
         }
         if(hasobj!=0){
+            Alert("错误","该组非空，无法删除","warning");
             console.log('没有删除group',index,'hasobj:',hasobj);
-            alert('组不是空的 无法删除！');
         }else{
+            var groupname = Persons_Vue.Groups2['g'+groupnum];
             Vue.delete(Persons_Vue.Persons,groupnum);
-            Vue.delete(Persons_Vue.Groups,Persons_Vue.Groups2[groupnum]);
-            Vue.delete(Persons_Vue.Groups2,groupnum);
+            Vue.delete(Persons_Vue.Groups,groupname);
+            Vue.delete(Persons_Vue.Groups2,'g'+groupnum);
             window.DEL_Group(groupnum);
             //Persons_Vue.Groups.splice(index,1);
+            Alert("成功","删除组\""+groupname+"\"成功","success");
         }
     }catch(err){
         console.log(err);
@@ -215,10 +170,12 @@ var Botton_DEL_Group = (groupnum)=>{
 */
 var Botton_DEL_Viliger = (id)=>{
     try{
+        var name = Persons_Vue.print_message.viligers[id].name;
         var groupnum = Persons_Vue.print_message.groupnum;
         var ownerid = Persons_Vue.print_message.ownerid;
         Vue.delete(Persons_Vue.Persons[groupnum][ownerid].viligers,id);
         window.DEL_Viliger(id);
+        Alert("成功","删除村民\""+name+"\"成功","success");
     }catch(err){
         console.log(err);
     }
@@ -230,10 +187,12 @@ var Botton_DEL_Viliger = (id)=>{
 */
 var Botton_DEL_Household = (ownerid)=>{
     try{
+        var name = Persons_Vue.print_message.name;
         var groupnum = Persons_Vue.print_message.groupnum;
         Vue.delete(Persons_Vue.Persons[groupnum],ownerid);
         window.DEL_Viliger_hasownerid(ownerid);
         window.DEL_Household(ownerid);
+        Alert("成功","删除户\""+name+"\"成功","success");
     }catch(err){
         console.log(err);
     }
@@ -247,17 +206,8 @@ var Botton_Cg_Household = ()=>{
         if( Persons_Vue.input_message.groupnum==""||
             Persons_Vue.input_message.name==""||
             Persons_Vue.input_message.ownerid==""
-        ){
-            var date = new Date();
-            var time = date.getHours()+''+date.getMinutes()+date.getSeconds(); 
-            $("#bottonrehdalerts").append("<div class=\""+time+
-            " bottonaddgpalert alert alert-warning alert-dismissible fade show\" role=\"alert\">"+
-            "<strong>错误</strong> ，户主姓名、身份证、组号为必填项"+
-            "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
-            "<span aria-hidden=\"true\">&times;</span></button></div>"
-            );
-            console.log("."+time);
-            $("."+time).delay(1500).slideUp( 700 );
+        ){  
+            Alert("错误","户主姓名、身份证、组号为必填项","warning","#bottonrehdalerts");
         }else{
             $("#rehouseholdmodal").modal('hide');
             console.log('input_message',Persons_Vue.input_message);
@@ -266,7 +216,7 @@ var Botton_Cg_Household = ()=>{
             Botton_DEL_Household(ownerid);
             let input_message = Persons_Vue.input_message;
             let newhousehold={};
-            for(obj in input_message)   newhousehold[obj] = input_message[obj]+'';
+            for(obj in input_message)   newhousehold[obj] = input_message[obj];
             newhousehold.groupnum = Persons_Vue.Groups[newhousehold.groupnum];
             console.log('newhousehold',newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
@@ -276,6 +226,7 @@ var Botton_Cg_Household = ()=>{
                 if(Persons_Vue.print_message[obj]==='wq648a52vke1')
                     Vue.set(Persons_Vue.print_message,obj,'');
             }
+            Alert("成功","修改户信息成功","success");
             /*
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,'');
@@ -284,4 +235,31 @@ var Botton_Cg_Household = ()=>{
     }catch(err){
         console.log(err);
     }
+}
+
+/*
+    全局功能，信息提示
+    参数：
+        title:标题
+        str:输出语句
+        form:样式 of{
+            "success"
+            "info"
+            "waring"
+        }
+        displaypostion:输出位置的标签id = "#main_alert_display"
+*/
+var Alert = (title,str,form,displaypostion="#main_alert_display")=>{
+    var date = new Date();
+    var time = date.getHours()+''+date.getMinutes()+date.getSeconds();
+    $(displaypostion).append("<div class=\""+time+
+    " bottonaddgpalert alert alert-"+form+" alert-dismissible fade show\" role=\"alert\" style=\"position:center;\">"+
+    "<strong>"+title+"</strong> ，"+str+
+    "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">"+
+    "<span aria-hidden=\"true\">&times;</span></button></div>");
+    $('.'+time).css({opacity:0.8});
+    $("."+time).delay(1900).slideUp(700);
+        //$("."+time).show('slow');
+        //$("."+time).delay(1900).slideUp( 700 );
+    console.log("."+time);
 }

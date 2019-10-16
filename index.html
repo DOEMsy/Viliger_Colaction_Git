@@ -37,9 +37,9 @@
 					<li class="nav-item"><a class="nav-link" data-toggle="pill" href="#其他材料">其他材料</a></li>
 				</ul>
 			</div>
-
 			<!--Main display?-->
 			<div id="main_body" class="col bg-light container-fluid rounded border" style="height: 100%;">
+				<div id="main_alert_display" style="position: fixed; left: 50%; z-index:999;"></div>
 				<!--页面-->
 				<div id="info_displayer" class="tab-content" style="height: 100%;">
 				<!--页面 村民信息-->		
@@ -78,7 +78,7 @@
 										</div>
 									</div>
 
-									<button type="button" class="btn btn-info border rounded btn-sm" v-on:click="Botton_Refrash_input_message()" data-toggle="modal">新建户</button>
+									<button id="newhouseholdbotton" type="button" class="btn btn-info border rounded btn-sm" v-on:click="Botton_Refrash_input_message()" data-toggle="modal">新建户</button>
 									<div class="modal fade" id="newhouseholdmodal">
 										<div class="modal-dialog  modal-lg">
 											<div class="modal-content">
@@ -139,7 +139,7 @@
 																	<span id="householdcreate_groupnuminput" class="input-group-text">属于组</span>
 																</div>
 																<select class="form-control" v-model="input_message.groupnum">
-																	<option v-for="(group, groupnum, index) in Persons">{{Groups2[groupnum]}}</option>
+																	<option v-for="(group, groupnum, index) in Persons">{{Groups2['g'+groupnum]}}</option>
 																</select>
 															</div>  
 														</form>
@@ -157,7 +157,7 @@
 								</li>
 								<li v-for="(group, groupnum, index) in Persons" class="">
 									<div class="btn-group rounded border" style="width: 100%;">
-										<button v-bind:href="'#group'+groupnum" data-toggle="collapse" class="btn btn-sm btn-warning container-fluid">{{Groups2[groupnum]}}</button>
+										<button v-bind:href="'#group'+groupnum" data-toggle="collapse" class="btn btn-sm btn-warning container-fluid">{{Groups2['g'+groupnum]}}</button>
 										<button class="btn btn-sm btn-warning" v-on:click="Botton_DEL_Group(groupnum)">x</button>
 									</div>
 									<ul v-bind:id="'group'+groupnum" class="collapse  rounded border border-warning" style="list-style: none;">
@@ -272,7 +272,7 @@
 																					<span class="input-group-text">属于组</span>
 																				</div>
 																				<select class="form-control" v-model="input_message.groupnum">
-																					<option v-for="(group, groupnum, index) in Persons">{{Groups2[groupnum]}}</option>
+																					<option v-for="(group, groupnum, index) in Persons">{{Groups2['g'+groupnum]}}</option>
 																				</select>
 																			</div>  
 																		</form>

@@ -3,14 +3,14 @@ var Persons_Vue = new Vue({
     data:{
         Persons:{}, //村民们
         Groups:[],   //组名索引 [groupname] -> groupnum
-        Groups2:[],  //组名保存 [groupnum] -> groupname
+        Groups2:[],  //组名保存 ['g'+groupnum] -> groupname
         input_message:{             //输入新户的缓存数据
             'name':'','sex':'','birthday':'','race':''
             ,'political':'','education':'','job':''
             ,'ownerid':'','phone':'','fc':'','familynum':''
             ,'photo':'','income':'','fielding':''
             ,'breeding':'','causeofpoverty':''
-            ,'remark':'','groupnum':''
+            ,'remark':'','groupnum':'','viligers':''
         },
         print_message:{             //展示户的缓存数据
             'name':'','sex':'','birthday':'','race':''
@@ -18,7 +18,7 @@ var Persons_Vue = new Vue({
             ,'ownerid':'','phone':'','fc':'','familynum':''
             ,'photo':'','income':'','fielding':''
             ,'breeding':'','causeofpoverty':''
-            ,'remark':'','groupnum':''
+            ,'remark':'','groupnum':'','viligers':''
         },
         input_groupname:{
             'groupname':''
@@ -52,11 +52,11 @@ var Persons_Vue = new Vue({
             }
         },
         Botton_Refrash_input_message:function(){                    //按钮功能：刷新输入缓存，响应按钮打开户添加框
-            
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,'');
-            if(is_obj_empty(Persons_Vue.Persons))   alert('请在添加户之前新建一个组');
-            else{
+            if(is_obj_empty(Persons_Vue.Persons)){
+                Alert("错误","请先建立一个组","warning");
+            }else{
                 $('#newhouseholdmodal').modal({
                     backdrop: 'static',
                     keyboard: true
@@ -85,7 +85,7 @@ var Persons_Vue = new Vue({
         Botton_Re_Household:function(){                                        //按钮功能：输出缓存->输入缓存，响应按钮打开户修改框
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,Persons_Vue.print_message[obj]);
-            Persons_Vue.input_message.groupnum = Persons_Vue.Groups2[Persons_Vue.input_message.groupnum];
+            Persons_Vue.input_message.groupnum = Persons_Vue.Groups2['g'+Persons_Vue.input_message.groupnum];
             console.log(this.input_message,this.print_message);
             $('#rehouseholdmodal').modal({
                 backdrop: 'static',
