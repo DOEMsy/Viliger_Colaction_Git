@@ -18,10 +18,21 @@ node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/elect
 node-gyp rebuild -target=1.6.6 -arch=win32 -target_platform=win32 -dist-url=https://atom.io/download/electron/ -module_name=node_sqlite3 -module_path=../lib/binding/electron-v1.6.6-win32-ia32
 使用前要先编译
 */
+//空字符 = wq648a52vke1
+
 const sqlite3 = require("sqlite3");
 /*
   初始化检查数据库，若不存在则创建
 */
+
+
+
+
+
+
+
+
+/***********************PersonInformation***************************/
 let db = new sqlite3.Database('data/persons/data.db');
 let householdab = ['name','sex','birthday','race'
                   ,'political','education','job'
@@ -100,7 +111,7 @@ window.ADD_Household_sql = (Household)=>{
       //console.log(Household.name,Household['name'],Household[a],a);
     }
     //console.log(householdtabi,tostr_Household);
-    let insert = 'INSERT INTO Households ('+householdab+')';
+    let insert = 'INSERT INTO Households ('+householdtab+')';
     let value = 'VALUES('+tostr_Household+')';
     console.log(Household,insert,value);
     db.run(insert+' '+value);
@@ -270,4 +281,176 @@ window.DEL_Household = (ownerid)=>{
   }catch(err){
     console.log(err);
   }
+}
+
+window.Update_Viliger_ownerid = (oldownerid,newownerid)=>{
+  db.run('UPDATE Viligers SET ownerid = ? WHERE ownerid = ?',[newownerid,oldownerid],(err)=>{
+    if(err)
+      console.log(err);
+  })
+}
+
+
+
+/****************************ConstructionInformation************************************/
+let db_ConstructionInformation = new sqlite3.Database('data/constructions/data.db');
+let constructionab = [
+  'uid',  //识别码
+  'name', //项目名称
+  'ownername',  //负责人姓名
+  'ownerphone',  //负责人电话
+  'unit',        //申请单位
+  'unitphone',   //单位电话
+  'begindate',   //开始日期
+  'message',
+  'remark'       //备注
+]; 
+let constructioncreate = '';
+let constructiontab = '';
+for(i=0;i<constructionab.length;i++){
+  constructioncreate+=constructionab[i];
+  constructiontab+=constructionab[i];
+  constructioncreate+=' TEXT NOT NULL';
+  if(i!=constructionab.length-1){
+    constructioncreate+=',';
+    constructiontab+=',';
+  }
+}
+
+db_ConstructionInformation.run('CREATE TABLE IF NOT EXISTS Constructions('+constructioncreate+')');
+
+/*
+  函数：添加项目信息
+  引入：Construction
+*/
+window.ADD_Construction_sql = (Construction)=>{
+  try{
+    let tostr_Construction = '';
+    isfront = true;
+    for(a in constructionab){
+      if(!isfront){
+        tostr_Construction+=',';
+      }
+      isfront = false;
+      tostr_Construction+='\'';
+      if(Construction[constructionab[a]]!=undefined && Construction[constructionab[a]]!="")
+        tostr_Construction+=Construction[constructionab[a]];
+      else
+        tostr_Construction+='wq648a52vke1';
+      tostr_Construction+='\'';
+      //console.log(Household.name,Household['name'],Household[a],a);
+    }
+    //console.log(householdtabi,tostr_Household);
+    let insert = 'INSERT INTO Constructions ('+constructiontab+')';
+    let value = 'VALUES('+tostr_Construction+')';
+    console.log(Construction,insert,value);
+    db_ConstructionInformation.run(insert+' '+value);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.GETALL_Construction = (callback)=>{
+  db_ConstructionInformation.all('SELECT * FROM Constructions ORDER BY uid',[],(err,construction_rows)=>{
+    if(err){
+      console.log(err);
+    }
+    callback(construction_rows);
+  });
+}
+
+window.DEL_Construction = (uid)=>{
+  db_ConstructionInformation.run('DELETE FROM Constructions WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+window.Update_Construction_message = (uid,message)=>{
+  if(message=='') message='wq648a52vke1';
+  //console.log(message);
+  db_ConstructionInformation.run('UPDATE Constructions SET message = ? WHERE uid = ?',[message,uid],(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+
+
+
+
+
+/****************************EquipmentsInformation************************************/
+let db_EquipmentInformation = new sqlite3.Database('data/equipments/data.db');
+let equipmentab = [
+  'uid',  //识别码
+  'name', //设备名称
+  'ownername',  //负责人姓名
+  'ownerphone',  //负责人电话
+  'begindate',   //登记日期
+  'message',     
+  'remark'       //备注
+]; 
+let equipmentcreate = '';
+let equipmenttab = '';
+for(i=0;i<equipmentab.length;i++){
+  equipmentcreate+=equipmentab[i];
+  equipmenttab+=equipmentab[i];
+  equipmentcreate+=' TEXT NOT NULL';
+  if(i!=equipmentab.length-1){
+    equipmentcreate+=',';
+    equipmenttab+=',';
+  }
+}
+
+db_EquipmentInformation.run('CREATE TABLE IF NOT EXISTS Equipments('+equipmentcreate+')');
+
+/*
+  函数：添加项目信息
+  引入：Equipment
+*/
+window.ADD_Equipment_sql = (Equipment)=>{
+  try{
+    let tostr_Equipment = '';
+    isfront = true;
+    for(a in equipmentab){
+      if(!isfront){
+        tostr_Equipment+=',';
+      }
+      isfront = false;
+      tostr_Equipment+='\'';
+      if(Equipment[equipmentab[a]]!=undefined && Equipment[equipmentab[a]]!="")
+        tostr_Equipment+=Equipment[equipmentab[a]];
+      else
+        tostr_Equipment+='wq648a52vke1';
+      tostr_Equipment+='\'';
+      //console.log(Household.name,Household['name'],Household[a],a);
+    }
+    //console.log(householdtabi,tostr_Household);
+    let insert = 'INSERT INTO Equipments ('+equipmenttab+')';
+    let value = 'VALUES('+tostr_Equipment+')';
+    console.log(Equipment,insert,value);
+    db_EquipmentInformation.run(insert+' '+value);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.GETALL_Equipment = (callback)=>{
+  db_EquipmentInformation.all('SELECT * FROM Equipments ORDER BY uid',[],(err,equipment_rows)=>{
+    if(err){
+      console.log(err);
+    }
+    callback(equipment_rows);
+  });
+}
+
+window.DEL_Equipment = (uid)=>{
+  db_EquipmentInformation.run('DELETE FROM Equipments WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
 }

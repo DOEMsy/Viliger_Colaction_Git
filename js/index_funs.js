@@ -90,13 +90,13 @@ var Botton_ADD_Household = ()=>{
             console.log(Persons_Vue.input_message);
             let input_message = Persons_Vue.input_message;
             let newhousehold={};
-            for(obj in input_message)   newhousehold[obj] = input_message[obj]+'';
+            for(obj in input_message)   newhousehold[obj] = input_message[obj];
             newhousehold.groupnum = Persons_Vue.Groups[newhousehold.groupnum];
             console.log(newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
             window.ADD_Household_sql(newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum][newhousehold.ownerid],'viligers',{});
-            Alert("成功","创建户\""+newhousehold.ownerid+"\"成功","success"); 
+            Alert("成功","创建户\""+newhousehold.name+"\"成功","success"); 
             /*
             for(obj in Persons_Vue.input_message)
                 Vue.set(Persons_Vue.input_message,obj,'');
@@ -221,6 +221,7 @@ var Botton_Cg_Household = ()=>{
             console.log('newhousehold',newhousehold);
             Vue.set(Persons_Vue.Persons[newhousehold.groupnum],newhousehold.ownerid,newhousehold);
             window.ADD_Household_sql(newhousehold);
+            window.Update_Viliger_ownerid(ownerid,newhousehold.ownerid);
             Vue.set(Persons_Vue,'print_message',newhousehold);
             for(obj in Persons_Vue.print_message){
                 if(Persons_Vue.print_message[obj]==='wq648a52vke1')
@@ -263,3 +264,36 @@ var Alert = (title,str,form,displaypostion="#main_alert_display")=>{
         //$("."+time).delay(1900).slideUp( 700 );
     console.log("."+time);
 }
+
+
+var ReadConstructions = ()=>{
+    maxuid = 0;
+    window.GETALL_Construction((construction_rows)=>{
+        for(index in construction_rows){
+            var uid = construction_rows[index].uid;
+            Vue.set(Construction_Vue.Constructions,uid,construction_rows[index]);
+            for(obj in Construction_Vue.Constructions[uid])
+                if(Construction_Vue.Constructions[uid][obj]=='wq648a52vke1')
+                    Construction_Vue.Constructions[uid][obj]='';
+            console.log(construction_rows[index]);
+            if(uid>maxuid)  maxuid = uid;
+        }
+    });
+}
+ReadConstructions();
+
+var ReadEquipments = ()=>{
+    maxuid = 0;
+    window.GETALL_Equipment((equipment_rows)=>{
+        for(index in equipment_rows){
+            var uid = equipment_rows[index].uid;
+            Vue.set(Equipment_Vue.Equipments,uid,equipment_rows[index]);
+            for(obj in Equipment_Vue.Equipments[uid])
+                if(Equipment_Vue.Equipments[uid][obj]=='wq648a52vke1')
+                    Equipment_Vue.Equipments[uid][obj]='';
+            console.log(equipment_rows[index]);
+            if(uid>maxuid)  maxuid = uid;
+        }
+    });
+}
+ReadEquipments();
