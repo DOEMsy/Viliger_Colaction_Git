@@ -51,7 +51,7 @@ var is_obj_empty = (obj)=>{
 var Botton_ADD_Group = ()=>{
     try{
         if(Persons_Vue.input_groupname.groupname==''){
-            Alert("错误","组号不能为空！","warning","#bottonaddgpalert");
+            Alert("错误","组号不能为空！","warning","#bottonaddgpalerts");
         }else{
             $("#newgroupmodal").modal('hide');
             maxgroupnum++;
@@ -84,7 +84,7 @@ var Botton_ADD_Household = ()=>{
             Persons_Vue.input_message.name==""||
             Persons_Vue.input_message.ownerid==""
         ){
-            Alert("错误","户主姓名、身份证、组号为必填项","warning","#bottonaddgpalert");
+            Alert("错误","户主姓名、身份证、组号为必填项","warning","#bottonaddhdalerts");
         }else{
             $("#newhouseholdmodal").modal('hide');
             console.log(Persons_Vue.input_message);
@@ -266,7 +266,24 @@ var Alert = (title,str,form,displaypostion="#main_alert_display")=>{
 }
 
 
-var ReadConstructions = ()=>{
+var ReadPartys = (order='uid')=>{
+    maxuid = 0;
+    window.GETALL_Party((party_rows)=>{
+        for(index in party_rows){
+            var uid = party_rows[index].uid;
+            Vue.set(Party_Vue.Partys,uid,party_rows[index]);
+            for(obj in Party_Vue.Partys[uid])
+                if(Party_Vue.Partys[uid][obj]=='wq648a52vke1')
+                    Party_Vue.Partys[uid][obj]='';
+            console.log(party_rows[index]);
+            if(uid>maxuid)  maxuid = uid;
+        }
+    },order);
+}
+ReadPartys();
+
+
+var ReadConstructions = (order='uid')=>{
     maxuid = 0;
     window.GETALL_Construction((construction_rows)=>{
         for(index in construction_rows){
@@ -278,11 +295,11 @@ var ReadConstructions = ()=>{
             console.log(construction_rows[index]);
             if(uid>maxuid)  maxuid = uid;
         }
-    });
+    },order);
 }
 ReadConstructions();
 
-var ReadEquipments = ()=>{
+var ReadEquipments = (order='uid')=>{
     maxuid = 0;
     window.GETALL_Equipment((equipment_rows)=>{
         for(index in equipment_rows){
@@ -294,6 +311,43 @@ var ReadEquipments = ()=>{
             console.log(equipment_rows[index]);
             if(uid>maxuid)  maxuid = uid;
         }
-    });
+    },order);
 }
 ReadEquipments();
+
+
+var ReadAlleviations = (order='uid')=>{
+    maxuid = 0;
+    window.GETALL_Alleviation((alleviation_rows)=>{
+        for(index in alleviation_rows){
+            var uid = alleviation_rows[index].uid;
+            Vue.set(Alleviation_Vue.Alleviations,uid,alleviation_rows[index]);
+            for(obj in Alleviation_Vue.Alleviations[uid])
+                if(Alleviation_Vue.Alleviations[uid][obj]=='wq648a52vke1')
+                    Alleviation_Vue.Alleviations[uid][obj]='';
+            console.log(alleviation_rows[index]);
+            if(uid>maxuid)  maxuid = uid;
+        }
+    },order);
+}
+ReadAlleviations();
+
+
+
+
+
+var ReadDogs = (order = 'uid')=>{
+    maxuid = 0;
+    window.GETALL_Dog((dog_rows)=>{
+        for(index in dog_rows){
+            var uid = dog_rows[index].uid;
+            Vue.set(Dog_Vue.Dogs,uid,dog_rows[index]);
+            for(obj in Dog_Vue.Dogs[uid])
+                if(Dog_Vue.Dogs[uid][obj]=='wq648a52vke1')
+                    Dog_Vue.Dogs[uid][obj]='';
+            console.log(dog_rows[index]);
+            if(uid>maxuid)  maxuid = uid;
+        }
+    },order);
+}
+ReadDogs();

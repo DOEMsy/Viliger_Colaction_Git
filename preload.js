@@ -14,8 +14,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //var window = {};
 /*
-node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.6.6-win32-ia32
-node-gyp rebuild -target=1.6.6 -arch=win32 -target_platform=win32 -dist-url=https://atom.io/download/electron/ -module_name=node_sqlite3 -module_path=../lib/binding/electron-v1.6.6-win32-ia32
+node-gyp configure --module_name=node_sqlite3 --module_path=../lib/binding/electron-v6.0.6-win32-ia32
+node-gyp rebuild -target=6.0.6  -arch=win32 -target_platform=win32 -dist-url=https://atom.io/download/electron/ -module_name=node_sqlite3 -module_path=../lib/binding/electron-v6.0.6-win32-ia32
 使用前要先编译
 */
 //空字符 = wq648a52vke1
@@ -283,12 +283,130 @@ window.DEL_Household = (ownerid)=>{
   }
 }
 
+window.Cg_Household_Photo = (ownerid,photo)=>{
+  try{
+    console.log(photo+'|'+ownerid);
+    db.run('UPDATE Households SET photo = ? WHERE ownerid = ?',[photo,ownerid],(err)=>{
+      if(err){
+        throw(err);
+      }
+    })
+  }catch(err){
+    console.log(err);
+  }
+}
+
 window.Update_Viliger_ownerid = (oldownerid,newownerid)=>{
   db.run('UPDATE Viligers SET ownerid = ? WHERE ownerid = ?',[newownerid,oldownerid],(err)=>{
     if(err)
       console.log(err);
   })
 }
+
+
+
+
+
+/****************************PartyInformation************************************/
+let db_PartyInformation = new sqlite3.Database('data/partys/data.db');
+let partyab = [
+  'uid',  //识别码
+  'name', //项目名称
+  'ownername',  //负责人姓名
+  'ownerphone',  //负责人电话
+  'unit',        //申请单位
+  'unitphone',   //单位电话
+  'begindate',   //开始日期
+  'message',
+  'remark'       //备注
+]; 
+let partycreate = '';
+let partytab = '';
+for(i=0;i<partyab.length;i++){
+  partycreate+=partyab[i];
+  partytab+=partyab[i];
+  partycreate+=' TEXT NOT NULL';
+  if(i!=partyab.length-1){
+    partycreate+=',';
+    partytab+=',';
+  }
+}
+
+db_PartyInformation.run('CREATE TABLE IF NOT EXISTS Partys('+partycreate+')');
+
+/*
+  函数：添加项目信息
+  引入：Party
+*/
+window.ADD_Party_sql = (Party)=>{
+  try{
+    let tostr_Party = '';
+    isfront = true;
+    for(a in partyab){
+      if(!isfront){
+        tostr_Party+=',';
+      }
+      isfront = false;
+      tostr_Party+='\'';
+      if(Party[partyab[a]]!=undefined && Party[partyab[a]]!="")
+        tostr_Party+=Party[partyab[a]];
+      else
+        tostr_Party+='wq648a52vke1';
+      tostr_Party+='\'';
+      //console.log(Household.name,Household['name'],Household[a],a);
+    }
+    //console.log(householdtabi,tostr_Household);
+    let insert = 'INSERT INTO Partys ('+partytab+')';
+    let value = 'VALUES('+tostr_Party+')';
+    console.log(Party,insert,value);
+    db_PartyInformation.run(insert+' '+value);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.GETALL_Party = (callback,order='uid')=>{
+  db_PartyInformation.all('SELECT * FROM Partys ORDER BY ?',[order],(err,party_rows)=>{
+    if(err){
+      console.log(err);
+    }
+    callback(party_rows);
+  });
+}
+
+window.DEL_Party = (uid)=>{
+  db_PartyInformation.run('DELETE FROM Partys WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+window.Update_Party_message = (uid,message)=>{
+  if(message=='') message='wq648a52vke1';
+  //console.log(message);
+  db_PartyInformation.run('UPDATE Partys SET message = ? WHERE uid = ?',[message,uid],(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -350,8 +468,8 @@ window.ADD_Construction_sql = (Construction)=>{
   }
 }
 
-window.GETALL_Construction = (callback)=>{
-  db_ConstructionInformation.all('SELECT * FROM Constructions ORDER BY uid',[],(err,construction_rows)=>{
+window.GETALL_Construction = (callback,order='uid')=>{
+  db_ConstructionInformation.all('SELECT * FROM Constructions ORDER BY ?',[order],(err,construction_rows)=>{
     if(err){
       console.log(err);
     }
@@ -438,8 +556,8 @@ window.ADD_Equipment_sql = (Equipment)=>{
   }
 }
 
-window.GETALL_Equipment = (callback)=>{
-  db_EquipmentInformation.all('SELECT * FROM Equipments ORDER BY uid',[],(err,equipment_rows)=>{
+window.GETALL_Equipment = (callback,order='uid')=>{
+  db_EquipmentInformation.all('SELECT * FROM Equipments ORDER BY ?',[order],(err,equipment_rows)=>{
     if(err){
       console.log(err);
     }
@@ -449,6 +567,202 @@ window.GETALL_Equipment = (callback)=>{
 
 window.DEL_Equipment = (uid)=>{
   db_EquipmentInformation.run('DELETE FROM Equipments WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+window.Update_Equipment_message = (uid,message)=>{
+  if(message=='') message='wq648a52vke1';
+  //console.log(message);
+  db_EquipmentInformation.run('UPDATE Equipments SET message = ? WHERE uid = ?',[message,uid],(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+/****************************AlleviationsInformation************************************/
+let db_AlleviationInformation = new sqlite3.Database('data/alleviations/data.db');
+let alleviationab = [
+  'uid',  //识别码
+  'name', //设备名称
+  'ownername',  //负责人姓名
+  'ownerphone',  //负责人电话
+  'begindate',   //登记日期
+  'message',     
+  'remark'       //备注
+]; 
+let alleviationcreate = '';
+let alleviationtab = '';
+for(i=0;i<alleviationab.length;i++){
+  alleviationcreate+=alleviationab[i];
+  alleviationtab+=alleviationab[i];
+  alleviationcreate+=' TEXT NOT NULL';
+  if(i!=alleviationab.length-1){
+    alleviationcreate+=',';
+    alleviationtab+=',';
+  }
+}
+
+db_AlleviationInformation.run('CREATE TABLE IF NOT EXISTS Alleviations('+alleviationcreate+')');
+
+/*
+  函数：添加项目信息
+  引入：Alleviation
+*/
+window.ADD_Alleviation_sql = (Alleviation)=>{
+  try{
+    let tostr_Alleviation = '';
+    isfront = true;
+    for(a in alleviationab){
+      if(!isfront){
+        tostr_Alleviation+=',';
+      }
+      isfront = false;
+      tostr_Alleviation+='\'';
+      if(Alleviation[alleviationab[a]]!=undefined && Alleviation[alleviationab[a]]!="")
+        tostr_Alleviation+=Alleviation[alleviationab[a]];
+      else
+        tostr_Alleviation+='wq648a52vke1';
+      tostr_Alleviation+='\'';
+      //console.log(Household.name,Household['name'],Household[a],a);
+    }
+    //console.log(householdtabi,tostr_Household);
+    let insert = 'INSERT INTO Alleviations ('+alleviationtab+')';
+    let value = 'VALUES('+tostr_Alleviation+')';
+    console.log(Alleviation,insert,value);
+    db_AlleviationInformation.run(insert+' '+value);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.GETALL_Alleviation = (callback,order = 'uid')=>{
+  db_AlleviationInformation.all('SELECT * FROM Alleviations ORDER BY ?',[order],(err,alleviation_rows)=>{
+    if(err){
+      console.log(err);
+    }
+    callback(alleviation_rows);
+  });
+}
+
+window.DEL_Alleviation = (uid)=>{
+  db_AlleviationInformation.run('DELETE FROM Alleviations WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+window.Update_Alleviation_message = (uid,message)=>{
+  if(message=='') message='wq648a52vke1';
+  //console.log(message);
+  db_AlleviationInformation.run('UPDATE Alleviations SET message = ? WHERE uid = ?',[message,uid],(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************DogsInformation************************************/
+let db_DogInformation = new sqlite3.Database('data/dogs/data.db');
+let dogab = [
+  'uid',  //识别码
+  'name', //设备名称
+  'ownername',  //负责人姓名
+  'ownerphone',  //负责人电话
+  'begindate',   //登记日期
+  'message',     
+  'remark'       //备注
+]; 
+let dogcreate = '';
+let dogtab = '';
+for(i=0;i<dogab.length;i++){
+  dogcreate+=dogab[i];
+  dogtab+=dogab[i];
+  dogcreate+=' TEXT NOT NULL';
+  if(i!=dogab.length-1){
+    dogcreate+=',';
+    dogtab+=',';
+  }
+}
+
+db_DogInformation.run('CREATE TABLE IF NOT EXISTS Dogs('+dogcreate+')');
+
+/*
+  函数：添加项目信息
+  引入：Dog
+*/
+window.ADD_Dog_sql = (Dog)=>{
+  try{
+    let tostr_Dog = '';
+    isfront = true;
+    for(a in dogab){
+      if(!isfront){
+        tostr_Dog+=',';
+      }
+      isfront = false;
+      tostr_Dog+='\'';
+      if(Dog[dogab[a]]!=undefined && Dog[dogab[a]]!="")
+        tostr_Dog+=Dog[dogab[a]];
+      else
+        tostr_Dog+='wq648a52vke1';
+      tostr_Dog+='\'';
+      //console.log(Household.name,Household['name'],Household[a],a);
+    }
+    //console.log(householdtabi,tostr_Household);
+    let insert = 'INSERT INTO Dogs ('+dogtab+')';
+    let value = 'VALUES('+tostr_Dog+')';
+    console.log(Dog,insert,value);
+    db_DogInformation.run(insert+' '+value);
+  }catch(err){
+    console.log(err);
+  }
+}
+
+window.GETALL_Dog = (callback,order='uid')=>{
+  db_DogInformation.all('SELECT * FROM Dogs ORDER BY ?',[order],(err,dog_rows)=>{
+    if(err){
+      console.log(err);
+    }
+    callback(dog_rows);
+  });
+}
+
+window.DEL_Dog = (uid)=>{
+  db_DogInformation.run('DELETE FROM Dogs WHERE uid = ?',uid,(err)=>{
+    if(err){
+      console.log(err);
+    }
+  });
+}
+
+window.Update_Dog_message = (uid,message)=>{
+  if(message=='') message='wq648a52vke1';
+  //console.log(message);
+  db_DogInformation.run('UPDATE Dogs SET message = ? WHERE uid = ?',[message,uid],(err)=>{
     if(err){
       console.log(err);
     }
